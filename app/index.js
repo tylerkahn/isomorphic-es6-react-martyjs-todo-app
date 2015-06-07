@@ -1,20 +1,18 @@
-var _ = require('lodash');
-var Marty = require('marty');
+import Marty from 'marty';
+import path from 'path';
+// Dynamically require in everything within the 'actions', 'queries', 'sources' and 'stores' folders
+let context = require.context("./", true, /(actions|queries|sources|stores)/);
 
-/*var ctx = require.context(__dirname, true,
-    /(stores|actions|queries|sources)\/.*\.js$/);
-*/
+export default class Application extends Marty.Application {
+  constructor(options) {
+    super(options);
 
-function loadContext(contextRequire, fn) {
-  contextRequire.keys().forEach(fn(contextRequire(mod)));
+    context.keys().forEach((key) =>  {
+      if (!/\.js/.test(key)) {
+        let id = path.basename(key);
+        this.register(id, context(key));
+      }
+    });
+    this.router = require('./router');
+  }
 }
-
-var App = Marty.createApplication(function () {
-
-  this.router = require('./router');
-
-  laodContext(ctx, (mod) => this.register);
-
-});
-
-module.exports = App;

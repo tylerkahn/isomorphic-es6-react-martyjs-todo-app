@@ -5,48 +5,64 @@
 var bg = require('gulp-bg');
 var eslint = require('gulp-eslint');
 var gulp = require('gulp');
-var harmonize = require('harmonize');
-var makeWebpackConfig = require('./webpack/makeconfig');
-var runSequence = require('run-sequence');
-var webpackBuild = require('./webpack/build');
-var webpackDevServer = require('./webpack/devserver');
-var yargs = require('yargs');
+var gutil = require('gulp-util');
+var WebpackDevServer = require('webpack-dev-server');
+var webpack = require("webpack");
+var webpackBuild = require("gulp-webpack-build");
+var path = require("path");
+var _ = require('lodash');
+var nodemon = require('nodemon');
+var fs = require('fs');
 
-// Enables node's --harmony flag programmatically for jest.
-harmonize();
-
-var args = yargs
-  .alias('p', 'production')
-  .argv;
+var src = './app',
+    webpackOptions = {
+        debug: true,
+        devtool: '#source-map'
+    },
+    webpackConfig = {
+        useMemoryFs: true,
+        progress: true
+    }
 
 gulp.task('env', function() {
   process.env.NODE_ENV = args.production ? 'production' : 'development';
 });
 
-gulp.task('build-webpack-production', webpackBuild(makeWebpackConfig(false)));
-gulp.task('build-webpack-dev', webpackDevServer(makeWebpackConfig(true)));
-gulp.task('build-webpack', [args.production ? 'build-webpack-production' : 'build-webpack-dev']);
-gulp.task('build', ['build-webpack']);
-
 gulp.task('eslint', function() {
   return gulp.src([
       'gulpfile.js',
       'app/**/*.js',
-      'webpack/*.js'
+      'server/index.js',
     ])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failOnError());
 });
 
-//TODO: add chai gulp task
-gulp.task('test', function(done) {
-  // Run test tasks serially, because it doesn't make sense to build when tests
-  // are not passing, and it doesn't make sense to run tests, if lint has failed.
-  // Gulp deps aren't helpful, because we want to run tasks without deps as well.
-  runSequence('eslint', 'build-webpack-production', done);
-});
+function webpackTask(configFilename) {
+    return gulp.src(path.join(".", configFilename), { base: path.resolve(".") })
+        .pipe(webpackBuild.init(webpackConfig))
+        .pipe(webpackBuild.props(webpackOptions))
+        .pipe(webpackBuild.run())
+        .pipe(webpackBuild.format({
+            version: false,
+            timings: true
+        }))
+        .pipe(webpackBuild.failAfter({
+            errors: true,
+            warnings: false
+        }))
+        .pipe(gulp.dest("."));
+}
 
-gulp.task('server', ['env', 'build'], bg('node', 'bin/www'));
+gulp.task('webpack-server', bg('webpack', '--config', 'webpack.config.server.js'));
+
+gulp.task('start-server', bg("node", "dist/server.js"));
+
+gulp.task("start-webpack-dev-server", bg('webpack-dev-server', '--config', 'webpack.config.client.js', '--hot', '--inline', '--port', '9009'));
+
+gulp.task('server', ['start-webpack-dev-server', 'webpack-server', 'start-server'], function() {
+    gulp.watch(['dist/server.js'], ['start-server']);
+});
 
 gulp.task('default', ['server']);

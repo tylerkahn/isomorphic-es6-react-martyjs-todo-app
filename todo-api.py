@@ -1,32 +1,60 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask.ext.cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app, resources=r'/api/*', allow_headers="Content-Type")
+app.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app, resources={r'/api/*': {"origins": "*"}})
 
 
 class Todo(object):
-    def __init__(self, id, body=None):
-        self.id = id
+    counter = 0
+
+    def __init__(self, body=None):
+        self.id = Todo.counter
+        Todo.counter += 1
         self.body = body
 
-todos = {
-    0: Todo(0, "hello world"),
-    1: Todo(1, "create app"),
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'body': self.body
+        }
+
+
+todos_store = {
+    0: Todo("hello world"),
+    1: Todo("create app")
 }
 
 
 @app.route("/api/todos")
 def todos():
-    return jsonify(todos=todos.values())
+    return jsonify(todos=[t.to_dict() for t in todos_store.values()])
 
 
-@app.route("/api/todos/<id>")
+@app.route("/api/todos", methods=['POST'])
+def todos_add():
+    todo = Todo(request.form.get('body'))
+    todos_store[todo.id] = todo
+    return jsonify(todo.to_dict()), 201
+
+
+@app.route("/api/todos/<int:id>")
 def todo(id):
-    if id in todos:
-        return jsonify(todo=todos[id])
+    if id in todos_store:
+        return jsonify(todo=todos_store[id].to_dict())
     else:
-        return ('', 404)
+        return '', 404
+
+
+@app.route("/api/todos/<int:id>", methods=['DELETE'])
+def todo_delete(id):
+    if id in todos_store:
+        del todos_store[id]
+        return '', 204
+    else:
+        return '', 404
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

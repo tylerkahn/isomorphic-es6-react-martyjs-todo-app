@@ -8,8 +8,11 @@ var NavigationActionCreators = Marty.createActionCreators({
   navigateHome() {
     this.navigateTo('home');
   },
-  navigateToTodos(id) {
-    this.navigateTo('todos', { id: id });
+  navigateToTodos() {
+    this.navigateTo('todos');
+  },
+  navigateToTodo(id) {
+    this.navigateTo('todo', { id: id });
   }
 });
 
