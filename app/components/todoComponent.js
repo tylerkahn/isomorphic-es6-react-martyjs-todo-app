@@ -1,19 +1,19 @@
 import React from 'react';
 import Marty from 'marty';
 
-class _Todo extends React.Component {
+class Todo extends React.Component {
   render() {
     let todo = this.props.todo;
 
     return (
         <div className='todo'>
-            {todo.id} x> *{todo.body}*
+            {todo.id} - <strong>{todo.body}</strong>
         </div>
     );
   }
 }
 
-const Todo = Marty.createContainer(_Todo, {
+export default Marty.createContainer(Todo, {
   listenTo: ['todoStore'],
   fetch: {
     todo() {
@@ -27,5 +27,3 @@ const Todo = Marty.createContainer(_Todo, {
     return <div className='error'>{error}</div>;
   }
 });
-
-export default Todo;

@@ -9,8 +9,6 @@ var ejs = require('ejs');
 
 var app = express();
 
-app.set('port', process.env.PORT || 8000);
-
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -22,6 +20,6 @@ app.use(require('marty-express')({
   }
 }));
 
-app.listen(app.get('port'));
+app.listen(5000);
 
-console.log('todo-marty started at http://localhost:' + app.get('port'));
+console.log('isomorphic-todo started at http://localhost:5000');

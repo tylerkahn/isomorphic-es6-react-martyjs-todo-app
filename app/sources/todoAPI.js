@@ -1,13 +1,19 @@
-var Marty = require('marty');
+import Marty from 'marty';
 
-var TodoAPI = Marty.createStateSource({
+export default Marty.createStateSource({
   type: 'http',
   getById(id) {
-    return this.get('http://localhost:5001/api/todos/' + id);
+    return this.get('/api/todos/' + id);
   },
   getAll() {
-    return this.get('http://localhost:5001/api/todos');
+    return this.get('/api/todos');
+  },
+  create(body) {
+    let form = new FormData();
+    form.append('body', body);
+    return this.post({
+      url: '/api/todos',
+      body: form
+    })
   }
 });
-
-module.exports = TodoAPI;

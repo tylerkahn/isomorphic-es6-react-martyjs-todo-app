@@ -11,7 +11,6 @@ var webpack = require("webpack");
 var webpackBuild = require("gulp-webpack-build");
 var path = require("path");
 var _ = require('lodash');
-var nodemon = require('nodemon');
 var fs = require('fs');
 
 var src = './app',
@@ -59,9 +58,11 @@ gulp.task('webpack-server', bg('webpack', '--config', 'webpack.config.server.js'
 
 gulp.task('start-server', bg("node", "dist/server.js"));
 
-gulp.task("start-webpack-dev-server", bg('webpack-dev-server', '--config', 'webpack.config.client.js', '--hot', '--inline', '--port', '9009'));
+gulp.task("start-webpack-dev-server", bg('webpack-dev-server', '--config', 'webpack.config.client.js', '--hot', '--inline', '--port', '5002'));
 
-gulp.task('server', ['start-webpack-dev-server', 'webpack-server', 'start-server'], function() {
+gulp.task('start-proxy-server', bg("node", "server/proxy.js"));
+
+gulp.task('server', ['start-webpack-dev-server', 'webpack-server', 'start-server', 'start-proxy-server'], function() {
     gulp.watch(['dist/server.js'], ['start-server']);
 });
 

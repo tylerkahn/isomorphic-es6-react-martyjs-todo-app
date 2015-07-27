@@ -6,7 +6,6 @@ import Todo from '../components/todoComponent';
 export default class TodoView extends React.Component {
   render() {
     let id = this.props.id;
-
     return (
         <div>
             <h3>Todo</h3>

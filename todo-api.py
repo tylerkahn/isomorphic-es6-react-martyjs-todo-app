@@ -36,7 +36,7 @@ def todos():
 def todos_add():
     todo = Todo(request.form.get('body'))
     todos_store[todo.id] = todo
-    return jsonify(todo.to_dict()), 201
+    return jsonify(todo=todo.to_dict()), 201
 
 
 @app.route("/api/todos/<int:id>")

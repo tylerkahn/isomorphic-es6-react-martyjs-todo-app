@@ -4,7 +4,7 @@ var _ = require('lodash');
 module.exports = _.merge(webpackConfig, {
   entry: {
     main: [
-          'webpack-dev-server/client?http://0.0.0.0:9009' , // WebpackDevServer host and port
+          'webpack-dev-server/client?http://0.0.0.0:5002' , // WebpackDevServer host and port
           'webpack/hot/only-dev-server',
           './app/main.js'
       ]
@@ -12,7 +12,7 @@ module.exports = _.merge(webpackConfig, {
   output: {
     path: __dirname + '/dist',
     filename: '[name].js',
-    publicPath: "http://localhost:9009/assets/"
+    publicPath: "http://0.0.0.0:5002/assets/"
   }
 });
 

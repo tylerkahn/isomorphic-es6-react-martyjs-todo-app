@@ -1,7 +1,7 @@
 import React from 'react';
 import Marty from 'marty';
 import Application from './index';
-var ApplicationContainer = Marty.ApplicationContainer;
+const ApplicationContainer = Marty.ApplicationContainer;
 
 window.React = React; // For React Developer Tools
 window.Marty = Marty; // For Marty Developer Tools

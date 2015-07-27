@@ -1,8 +1,7 @@
-var Marty = require('marty');
+import Marty from 'marty';
 
-var TodoConstants = Marty.createConstants([
+export default Marty.createConstants([
   'RECEIVE_TODO',
-  'RECEIVE_TODOS'
+  'RECEIVE_TODOS',
+  'CREATE_TODO'
 ]);
-
-module.exports = TodoConstants;

@@ -1,9 +1,10 @@
-var _ = require('lodash');
-var Marty = require('marty');
-var TodoConstants = require('../constants/todoConstants');
+import _ from 'lodash';
+import Marty from 'marty';
+import TodoConstants from '../constants/todoConstants';
 
-var TodoStore = Marty.createStore({
+export default Marty.createStore({
   handlers: {
+    createTodo: TodoConstants.CREATE_TODO_DONE,
     addTodo: TodoConstants.RECEIVE_TODO,
     addTodos: TodoConstants.RECEIVE_TODOS
   },
@@ -12,6 +13,9 @@ var TodoStore = Marty.createStore({
         todos: {},
         allQuery: undefined
     };
+  },
+  createTodo(todo) {
+    this.addTodo(todo);
   },
   addTodo(todo) {
     this.state.todos[todo.id] = todo;
@@ -44,5 +48,3 @@ var TodoStore = Marty.createStore({
     });
   }
 });
-
-module.exports = TodoStore;

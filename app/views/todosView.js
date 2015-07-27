@@ -1,15 +1,15 @@
-var React = require('react');
-var Marty = require('marty');
-var _ = require('lodash');
+import React from 'react';
+import Marty from 'marty';
+import _ from 'lodash';
 
 import ReactBootstrap from 'react-bootstrap';
-let {ListGroup, ListGroupItem} = ReactBootstrap;
+let {ListGroup, ListGroupItem, Input} = ReactBootstrap;
 
-var Todo = require('../components/todoComponent');
+const Todo = require('../components/todoComponent');
 
 const TodosView = React.createClass({
-  render: function() {
-    var todos = this.props.todos;
+  render() {
+    const todos = this.props.todos;
     return (
       <div>
         <h2>Todos</h2>
@@ -17,13 +17,31 @@ const TodosView = React.createClass({
           {todos.map(todo =>
             <ListGroupItem key={todo.id} ><Todo id={todo.id} todo={todo} /></ListGroupItem>
           )}
+          <ListGroupItem>
+            <Input
+              type='text'
+              placeholder='Enter new todo item'
+              ref='input'
+              onKeyDown={this.createTodo} />
+          </ListGroupItem>
         </ListGroup>
       </div>
     );
+  },
+  componentDidMount() {
+    React.findDOMNode(this.refs.input).firstChild.focus();
+  },
+  componentDidUpdate() {
+    React.findDOMNode(this.refs.input).firstChild.focus();
+  },
+  createTodo(e) {
+    if (e.keyCode === 13) { //Enter
+      this.app.todoActionCreators.createTodo(e.target.value);
+    }
   }
 });
 
-const TodosViewContainer = Marty.createContainer(TodosView, {
+export default Marty.createContainer(TodosView, {
   listenTo: ['todoStore'],
   fetch: {
     todos() {
@@ -37,5 +55,3 @@ const TodosViewContainer = Marty.createContainer(TodosView, {
     return <div className='error'>{error}</div>;
   }
 });
-
-export default TodosViewContainer;

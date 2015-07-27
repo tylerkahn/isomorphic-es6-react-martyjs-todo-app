@@ -14,7 +14,7 @@ export default class AppView extends React.Component {
   render() {
     return (
       <div className="container">
-        <Navbar brand={<Link to="app">Todo Marty</Link>}>
+        <Navbar brand={<Link to="app">Isomorphic Todo</Link>}>
           <Nav navbar>
             <NavItemLink to="hello">Hello</NavItemLink>
             <NavItemLink to="todos">Todos</NavItemLink>

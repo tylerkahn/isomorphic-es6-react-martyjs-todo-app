@@ -1,7 +1,7 @@
-var Marty = require('marty');
-var Router = require('../router');
+import Marty from 'marty';
+import Router from '../router';
 
-var NavigationActionCreators = Marty.createActionCreators({
+export default Marty.createActionCreators({
   navigateTo(route, params) {
     this.app.router.transitionTo(route, params);
   },
@@ -15,6 +15,3 @@ var NavigationActionCreators = Marty.createActionCreators({
     this.navigateTo('todo', { id: id });
   }
 });
-
-
-module.exports = NavigationActionCreators;

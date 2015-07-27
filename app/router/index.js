@@ -1,8 +1,8 @@
-var Marty = require('marty');
-var routes = require('./routes');
-var Router = require('react-router');
+import Marty from 'marty';
+import routes from './routes';
+import Router from 'react-router';
 
-module.exports = Router.create({
+export default Router.create({
   routes: routes,
   location: Marty.isBrowser ? Router.HistoryLocation : null
 });
